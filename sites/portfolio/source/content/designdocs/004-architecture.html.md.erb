@@ -1,0 +1,321 @@
+---
+title: Architecture
+type: design
+layout: layout-knowbase
+name: architecture
+section: general
+<!-- status: --draft -->
+source: ../
+submenu:
+  - [Modules, modules]
+  - [Pages, pages]
+---
+
+
+<main markdown="1">
+  
+## Architecture
+
+Page architecture, # pages, what they should say &amp; hold.
+
+- All modules and pages should be available for plug and play; they should be able to exist individually.
+- Data model can scale up/down depending on how much "control" you want the system to have
+
+
+
+
+---
+
+### Modules
+
+<div class="_grid-cols-2 _grid-column _grid-dense">
+
+<div class="_card --simple" markdown="1">
+#### Header Nav
+
+- Schedule
+- Venues
+- Music (Bands &amp; DJs)
+- **Buy Passes** *(emphasize)* 
+- Secondary
+  - Housing
+  - Volunteer
+</div>
+
+
+<div class="_card --simple" markdown="1">
+#### Cart
+
+- Current # of items
+- Total Price
+- Checkout
+
+</div>
+
+
+<div class="_card --simple" markdown="1">
+#### Footer
+
+- About
+- Volunteering
+- Housing
+- Code of Conduct
+- Privacy Policy
+- Safe Spaces Policy
+- Copyright Information
+- Facebook Link
+- Contact
+  - Email and phone #s
+- Funny Disclaimer
+</div>
+
+
+<div class="_card --simple" markdown="1">
+#### Purchase Module
+
+Ticket-buying and displaying module
+
+- Current available tickets
+  - Ticket and Merch
+    - Price
+    - Description
+      - Tie
+    - CTA to add to cart
+
+</div>
+
+<div class="_card --simple" markdown="1">
+#### Scene Leaderboard
+
+Show what scenes are coming
+
+- Fun way to "gamify" events
+- Show top 5 scenes that have signed up
+- Don't show # participants (few ppl @ beginning)
+
+
+</div>
+
+<div class="_card --simple" markdown="1">
+#### Currently
+
+What is happening currently? Prominent on home page
+
+- Message Updater
+  - Alert if plans have changed, let ppl know
+- Can be dropped anywhere, mainly on homepage
+- Only show what's currently going on
+- Before Event
+  - Ticket Counter
+  - Housing
+  - Volunteer
+- During Event
+  - Classes, dances, locations, time
+- After Event
+  - Survey
+  - Feedback
+
+</div>
+
+
+</div>
+
+
+---
+
+### Pages 
+
+
+<div class="_card --simple" markdown="1">
+
+#### Home Page
+
+All the pertinent information should be displayed here
+
+- Title Banner
+- Hero Area
+  - Photo &amp; Credit *(optional)*
+  - Event Logo &amp; Name
+- Welcome module
+  - Welcome message and what this is about
+  - Countdown **optional**
+- Currently Module
+- ~Full Schedule~ *(too distracting; unnecessary)*
+
+</div>
+
+
+
+<div class="_card --simple" markdown="1">
+  
+#### Schedule Page
+
+Dances, bands, DJ’s and Venues. What happens, when? Essentially a list of events
+
+Link to:
+  - Venue / Address
+  - Band &amp; DJ info
+
+- List of Days
+  - Day: 
+    - Day of week, Date, Year (Friday, June 1, 2018)
+    - List of Events
+      - Event: eventName (Friday Main Dance)
+        - Description
+        - Venue
+          - [Venue Name]
+          - [Address]
+        - Cost at the door breakdown
+          - $10 Public, $5 Students
+        - Time Slot
+          - 8:00pm - 9:00pm Beginner Lesson
+          - 9:00pm - 12:00am [Taryn Newborne &amp; the Real Deal]
+
+</div>
+
+
+<div class="_card --simple" markdown="1">
+  
+#### Venues Page
+
+Where stuff happens.
+
+- List of Venues
+  - Venue
+    - Name of venue
+    - Directions *link to Google maps*
+    - Website *link to website*
+    - Image *optional*
+      - Image credit *link to credits*
+    - Address
+    - Google Maps embed
+    - Notes *(getting there, parking, etc.)*
+    - Schedule
+      - [Event Name] (Friday Main Dance)
+
+</div>
+
+
+
+<div class="_card --simple" markdown="1">
+  
+#### Music Page
+
+Bands and DJs, and when they play
+
+- List of Bands/DJs
+  - Band/DJ
+    - Name
+    - Facebook or Website
+    - Description
+    - Image
+    - Schedule / when playing
+      - [Event Name] (Friday Main Dance)
+
+</div>
+
+
+<div class="_card --simple" markdown="1">
+  
+#### Tickets / Passes Page
+
+Get your passes!
+
+Passes work slightly different than before. Each pass is *independent* of other passes, and checks eligibility requirements individually against certain metrics. This helps simplify tickets for dance passes vs. class passes.
+
+- No more account creation required
+- Description
+  - What do the passes do (get into all events? Classes?)
+- Pass List
+  - Replaces the Buy Ticket CTA; "select the following to buy"
+  - Passes organized in category by tiers
+  - Tiers have a type and a range
+    - Type: DancePass Range: 21-40
+  - Pass
+    - Name
+    - Price
+    - isActive — highlighted; click on it to buy it
+    - isSoldOut
+    - onlyLeft: < 4 (only 3 left!)
+- Merchandise
+  - Item Category (shirts)
+    - Description (shirts description)
+    - Item
+      - Name
+      - Description
+      - Image
+      - Select Type
+      - CTA to Buy
+- At the Door Prices
+  - Essentially a breakdown of the `costs` of each Event
+  - Description (cash, check, credit?)
+  - Item
+    - Name (full weekend)
+    - Price (main price; can be free or something else)
+    - Special Pricing 
+      - Name (e.g. GT students )
+      - Special Price
+- Volunteering
+  - link out to Volunteering &amp; description
+- Housing
+  - link out to Housing &amp; description
+
+</div>
+
+
+<div class="_card --simple" markdown="1">
+  
+#### Competitions Page
+
+Competitions, if the event has any
+
+- Competition Events
+  - Event
+    - Description
+- Rules &amp; Judging Criteria
+- Advanced Qualifying Events
+
+
+</div>
+
+
+
+<div class="_card --simple" markdown="1">
+  
+#### About Page
+
+What are we about; are we a nonprofit? Who are we, and what do we stand for, etc. etc.
+
+- Description
+  - Thanks
+  - Sponsors
+  - Licenses
+- FAQ / Questions
+- Credits
+  - Person
+    - Name
+    - Description
+- Contact
+  - Method
+    - Who/what? (e.g. housing, payments)
+    - Email link
+- Policies
+  - Voluntering Policy
+  - Housing Policy
+  - Code of Conduct
+    - Harassment contacts; reporting harassment
+    - Alcohol Policy
+    - Safety Policy
+  - Privacy Policy
+  - Refund Policy
+
+
+</div>
+
+
+
+
+
+
+
+</main>

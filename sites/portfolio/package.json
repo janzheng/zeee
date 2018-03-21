@@ -1,0 +1,17 @@
+
+{
+  "name": "jsacher-portfolio",
+  "version": "1.0.0",
+  "description": "Jessica Sacher Portfolio",
+  "author": "Jan",
+  "private": true,
+  "scripts": {
+    "server":  "bundle exec middleman server --port 9999",
+    "start":   "npm run server",
+
+    "build":   "bundle exec middleman build ",
+    "github":  "npm run build; bundle exec middleman deploy ",
+    "stage":   "npm run build ; cd build ; surge . -d phage.surge.sh",
+    "prod":    "npm run build ; cd build ; surge . -d phage.ca"
+  }
+}

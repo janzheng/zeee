@@ -1,0 +1,16 @@
+{
+  "name": "jsacher",
+  "version": "1.0.0",
+  "description": "Jessica Sacher Portfolio",
+  "author": "Jan",
+  "private": true,
+  "scripts": {
+    "commit": "git add . -A ; git commit ; git push origin master ",
+    "start": "cd sites/portfolio; npm run start",
+    "stage": "cd sites/portfolio; npm run stage",
+    "prod": "cd sites/portfolio; npm run prod"
+  },
+  "dependencies": {
+    "coeur": "^0.1.47"
+  }
+}

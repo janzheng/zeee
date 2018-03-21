@@ -1,0 +1,251 @@
+---
+title: Data Models
+type: design
+layout: layout-knowbase
+name: data-models
+section: general
+<!-- status: --draft -->
+source: ../
+---
+
+
+<main markdown="1">
+  
+## Data Models
+
+Generic data models that power all dances.
+
+
+
+#### Business Logic
+
+Dance events are all very similar, but each othem will have special, differentiated business logic, like lead/follow balance for classes and such. Passes can have special "condition" checkers that check against the dance event and pass data to determine eligibility.
+
+
+
+#### Special Pricing / Discount Codes
+
+Special pricing and tier system should be baked into a merchandise and discount code system, and not built directly into an event. Keep separate for reusability
+
+- BluesGeek has special pricing, that requires ppl to email and get a special discount code
+  - College Groups (8 or more people): $80 per person
+  - International Travelers: $100
+  - Nashville Locals: $100
+
+#### Ticket Logic
+
+- Tickets sales are closed when
+  - `isOpen` is false
+  - `isPassesOpen` is false
+  - when `dance.status` is not in registration `reg`
+  -  an item’s condition is not met
+
+<div class="_card --simple" markdown="1">
+
+### Dance
+
+A whole dance event; e.g. a dance or workshop week, weekend. 
+The entire, encompassing dance event. General information, about, polciies, and such go here.
+
+- `isPublished`
+- `internal` — string/json (private)
+- `name` — 'Atlanta Lindy Exchange 2018'
+- `shortName` — 'Atlx 2018'
+- `basicId` — 'atlx-2018' — unique
+- `email` — info@atlantalindyexchange.com — main email contact
+- `facebook` — facebook link
+- `status` - `['pre','reg','dance','post']` enum
+
+- `isOpen` — if false, closes all sales; master
+- `isHousingOpen` — simple trigger
+- `isVolunteeringOpen` — simple trigger
+- `isPassesOpen` — on/off switch for selling passes
+- `isMerchOpen` — on/off switch for merchandise
+- `url` — link to main site
+- `policyUrl` — url to page for all policies
+
+
+- `data` — generic string/JSON container
+  - `policies` — markdown
+    - `volunteering`
+    - `housing`
+    - `codeOfConduct` — includes harassment contacts / reporting, alcohol, and safety 
+    - `privacy`
+    - `refund`
+- `receiptTemplate` — # str/json optional email template
+- `timeStart` — start date of event; useful w/o needing Events 
+- `timeEnd` — optional end time
+- `duration` — optional event duraiton
+
+- `housing` — String or string/JSON; Google link and desc; or actual data
+- `volunteering` - String or string/JSON; Google link and desc; or actual data
+
+- `[events]`
+- `[locations]`
+- `[passes]`
+- `[merchandise]`
+- `[talent]`
+- `[purchases]` — collection of purchase objects, passes and merch
+
+
+
+
+<div class="_margin-left-4" markdown="1">
+
+These are all used to initialize data for an event. These *could* start out as hard-coded objects, and then be made dynamic.
+
+
+<div class="_card --simple" markdown="1">
+#### Event _init/read-only_
+
+Any single event, including dance, lesson, competition, lecture, and music jam. Basically anything with a time, location, and details.
+
+- `isPublished`
+- `name` — Friday Late Night
+- `internal` — string/json 
+- `description`
+- `timeStart` — time/date start
+- `timeEnd` — time/date end (optional)
+- `duration` — how long does it go for (optional)
+- `door_prices` — string/json costs at the door; ex:
+  - `cost`
+    - `price` - 10
+    - `description` - Public; Students
+- `schedule` - array of objects
+  - `time` — 8:00pm - 9:00pm
+  - `description` — [Taryn Newborne &amp; the Real Deal]
+- `[talents]`
+- `[locations]`
+</div>
+
+<div class="_card --simple" markdown="1">
+##### Location _init/read-only_
+
+Spaces and locations for events
+
+- `isPublished`
+- `name`
+- `internal` — string/json 
+- `description` — parking notes, how to get there, etc.
+- `address` — full address
+- `url` — link to website
+- `gmaps_url` — link to Google Maps
+- `gmaps_embed` — code to embed
+- `image_url` — link to image
+- `image_caption` - caption, etc.
+- `[events]` — linked events, for generated schedule and event name
+</div>
+
+
+<div class="_card --simple" markdown="1">
+##### Pass _init/read-only_
+
+Defines what passes can be purchased, and their properties.
+Purchased passes are stored in _purchases_
+
+- `isPublished`
+- `name` — Tier 1 Pass
+- `itemId` — `tier-1-pass` for identification and fraud prevention
+- `basicId` — the related dance's ID, simplifies queries
+- `description`
+- `data` string/json — images or other metadata
+- `internal` — string/json 
+- `status` - [not available, not selling, selling, sold out, force selling] — some of these will be changed by the query resolver, if for example a condition isn't met; force selling means the option will be bypassed by a resolver
+- `price` — 50
+- `conditions` - e.g. sell this from 11 to 20 passes; useful for tiers; string/json; can be stacked
+  - `{"bounds": {"from": 11, "upto": 20, "start": "1/1/2018", "end": "1/3/2018"}}
+  - `from` — 11 — on sale when 10 tickets exist; starts at ticket #11
+  - `upto` — 20 — last eligible is 20; sold out when more tickets than 20 sold
+  - `time start` — start date/time — go on sale at this time
+  - `time end` — end date/time — end sale at this time
+- `activationCode` — special code; if exists, users enter this code to buy it; for free passes
+- `fields` — string/json — form fields and types required
+  - `role` — ex: lead/follow/both 
+  - `scene` — where are they from
+
+</div>
+
+<div class="_card --simple" markdown="1">
+
+##### Merchandise _init/read-only_
+
+Defines what merch can be purchased, and their properties.
+Purchased merchandise are stored in _purchases_
+
+- `isPublished`
+- `name` — T-Shirt
+- `itemId` — for identification
+- `basicId` — the related dance's ID, simplifies queries
+- `description`
+- `data` string/json — images or other metadata
+- `internal` — string/json 
+- `status` - [not available, not selling, selling, sold out, force selling]
+- `price` — 20
+- `conditions` — string/json 
+- `activationCode` — special code; if exists, users enter this code to buy it; for free passes
+- `fields` — string/json — form fields and types required, e.g. size, etc.
+</div>
+
+
+
+<div class="_card --simple" markdown="1">
+
+##### Talent
+
+Bands, DJs, Teachers, Speakers, etc.
+
+- `isPublished`
+- `name` — name to be displayed; full name, band name, nick name
+- `description` — talent description
+- `url` — link to website, fb, email
+- `url_text` — describing the link
+- `image_url` — link to image
+- `image_caption` — image cap and alt text
+- `type` — talent type (speaker, DJ, etc.)
+- `[events]` — linked events
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="_card --simple" markdown="1">
+
+### PurchaseOrder
+
+Storage container for each purchase, including passes and merchandise. For the future.
+Basically, we can still show each purchase linked to a user's email address by treating it as an email. 
+
+</div>
+
+<div class="_card --simple" markdown="1">
+### Purchase
+
+Storage for each purchase order, including passes and merchandise. 
+Tracks the transaction method along with passes, merch, and other items in the cart.
+Purchases should not rely on @relation data as they could change; all information should be permanent, not referred
+
+— `email` — purchase email, treated as "registration" / account
+- `internal` — string/json — notes on potential stuff
+- `isDeleted` — for whatever reason it needs to be 'deleted' / soft delete, not DB delete
+- `basicId` — the related dance's ID, simplifies queries
+
+- `invoiceId` — (generated ID receipt #; several items may be tied together w/ this ID)
+- `invoiceLink` — encrypted from a user's email and invoiceId for access
+- `transaction` — string/json (transaction info, like PayPal ID)
+
+- `name` — item name
+- `itemId` — item id; tier-1
+- `price`
+- `conditions` — in case of fraud, or need to go back and check; these can change later
+- `activationCode`
+- `fieldData` — string/json — any item data will be stored as json here
+- `typename` — what kind of object is it (pass, merch, etc.), actually uses __typename (payload type), for telling stuff apart from the payload
+</div>
+
+
+
+
+</main>

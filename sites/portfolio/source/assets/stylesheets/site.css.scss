@@ -1,0 +1,90 @@
+
+
+// STYLES
+$color-purple:        #8A1FB9;  ._color-purple {color:$color-purple} ._color-bg-purple { background-color: $color-purple }
+
+$color-main:          $color-purple;
+$color-secondary:     $color-purple;
+$color-tertiary:      $color-purple;    
+$color-active:        $color-purple;   
+
+$color-hover:          $color-purple;
+
+// stylecoeur base
+@import '../coeur/stylecoeur/index.scss';
+
+a {
+  text-decoration: underline;
+  @extend %ease;
+  border: 0;
+}
+
+h1 {
+  line-height: $size-p5;
+}
+
+.right {
+  @include screen-sm {
+    max-height: 100%;
+    overflow: scroll;
+
+    h1, h2 {
+      padding-bottom: 0;
+    }
+
+    h3 {
+      font-weight: normal;
+      color: $color-gray-dark;
+      font-size: $font-h2;
+      line-height: $font-h2 * 1.5;
+      padding-top: 0;
+      padding-top: $size-p3;
+
+      // &:first-of-type {
+      //   padding-top: 0;
+      // }
+    }
+
+    h4 {
+      font-size: $font-size-base;
+      line-height: $font-lineheight;
+      padding-bottom: 0;
+      font-weight: 0;
+
+      &:first-child {
+        padding-top: 0;
+      }
+    }
+
+    h5 {
+      font-size: $font-small;
+      line-height: $font-lineheight;
+      padding: 0;
+      padding-bottom: $size-base;
+      font-weight: 400;
+    }
+
+    h6 {
+      font-weight: normal;
+      font-size: $font-small;
+      line-height: $font-lineheight;
+      font-style: italic;
+      text-transform: inherit;
+      letter-spacing: inherit;
+    }
+  }
+}
+
+
+h6 {
+  @extend %font-serif;
+}
+
+hr {
+  border-width: 1px;
+  opacity: 0.25;
+}
+
+
+
+

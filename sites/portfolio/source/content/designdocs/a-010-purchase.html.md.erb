@@ -1,0 +1,142 @@
+---
+title: Purchase Module
+type: design
+layout: layout-knowbase
+name: purchase-module
+section: general
+<!-- status: --draft -->
+source: ../
+---
+
+
+<main markdown="1">
+  
+## Purchase Module
+
+Used to buy passes and merchandise from a dance site.
+
+Gets all the pass and merchandise data from the main event object. Records merchandise and passes into a purchases data object.
+
+- Can be plugged in anywhere / any site
+- Display available merchandise &amp; passes
+- Needs to check w/ basic event data (pass data, e.g.)
+- The entire box exists within a page
+- Completely self-contained
+- Because it's contained, doesn't use page routing
+- Callback system can exist on its own page under a custom route /receipts/{#invoiceId}
+
+
+<div class="_grid-cols-2">
+
+<div class="_card --simple" markdown="1">
+### Requirements
+
+- Do we need to separate "buying" phase and "reviewing" phas?e
+  - prepares users w/ a fixed state, reduces confusion
+
+- **Pre-Registration**
+  - Message: pre-reg
+- **Registration**
+  - Message: reg
+  - Purchase module
+    - passes
+    - merchandise
+- **Dance**
+  - Message: during
+  - Purchase module
+    - passes closed
+    - merchandise
+  - Online-method of paying at the door, if no card?
+- **Post**
+  - Message: post
+  - Purchase module
+    - passes closed
+    - merchandise still on?
+- **Off**
+  - Off / turned off / not active state
+  - for whatever reason all sales are off
+</div>
+
+<div class="_card --simple" markdown="1">
+### Examples
+
+[http://bond.backerkit.com/#tickets](http://bond.backerkit.com/#tickets)
+![ticket interface](/images/purchase_module/tickets.png 'tickets'){: ._width-100}
+
+![purchase module](/images/purchase_module/credit.png 'purchase module'){: ._width-100}
+</div>
+</div>
+
+### Pages &amp; Flow
+
+#### Pre-Registration
+
+- Simple message and/or countdown that says when registration opens. 
+- All the pricing and tickets should be available, but no "add/buy" button
+  - Maybe for flash sale tier / first tier, show how many are available to up the demand?
+
+#### Registration
+
+- Message about tickets/passes/merch
+- **Purchase Flow**
+  - **0: Store State**
+    - All eligible passes and merch displays from server
+      - Non-activation and tier-appropriate passes only
+    - Click **[Buy]** on an item, or on item itself
+      - If Item has fields, it expands w/ options (e.g. shirt size, name, email, etc.)
+      - User fills in the options
+      - Click **[Add]** adds the item to cart
+      - Shrinks the item back to original size
+    - Checkout area w/ **[Checkout]** 
+      - Item descriptors, with price
+      - *total price*
+      - Items can be removed from the cart
+      - Items can not be edited — but they can be removed and re-added (might be confusing?)
+    - **[Continue to Payment]** to continue
+  - **1: Payment / Review State**
+    - Checkout / Review screen
+      - info + price for each line item
+      - total price you pay
+      - can go back to edit cart
+      - confirm email that receipt/confirmation will be sent to
+        - emphasize importance
+      - checkbox to confirm policies
+      - Pay with PayPal (stripe for later)
+  - **2: Review State**
+    - Callback after PayPal, or from an email link
+      - instructions on how to buy more, pass transfers, cancellations, etc.
+      - callback might actually optionally to be on its own page w/ route
+      - Review page with Paypal or Stripe receipt information
+      - email of review page sent 
+
+---
+
+- **Activation Code Flow**
+  - User enters a code, clicks **[check code]**
+  - query server and compares againt all pass activation codes
+    - pass activation codes could be simple, comma delim, or obj
+    - if code is a match, server responds query w/ an array of passes and merch that match the activation code
+  - the new passes get added to the vuex/store, available for purchase
+
+
+#### Dance
+
+- Passes can be closed; some might remain open (add-ons, food)
+- Items can be closed based on conditions (like # of current passes, or date)
+- Merchandise should be closed (pay cash at the event, at least for ATLX2018)
+
+
+#### Post
+
+- In case merch can still be bought, otherwise no use for this.
+
+
+#### Server
+
+- Queries
+  - `GET_PASSES` — retrieves all available passes for event (including sold out and closed)
+- Mutators
+
+
+
+</main>

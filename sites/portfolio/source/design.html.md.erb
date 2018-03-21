@@ -1,0 +1,577 @@
+---
+layout: layout-knowbase
+title: Design Docs
+type: design
+submenu:
+- [introduction, dancey-dance-design-docs]
+
+
+home: true
+sidebarTitle: Dancey Dance
+sidebarCaption: design docs
+---
+<!-- intro kb -->
+<!-- source: / -->
+
+<% source = current_page.data.source || "./" %>
+
+<main markdown="1">
+  
+# Dancey Dance Design Docs
+
+
+Dance Source notes resource. Use the left menu.
+
+- site build / prototype build tech requirements checklist
+  - SEO tech too (https://www.seooptimizationguide.com)
+- generalize atlx as a store checkout system
+- atlx or general feedback gathering system like massive sci chat / StoreFeedchat
+- purchase module change to StoreComponent
+- coeur/StoreComponent
+
+
+
+## Todo
+
+- FORK THESE INTO A NEW FOLDER! The main goal is to launch ASAP
+- Lots of server patterns are reused in several places, replace these with constant definitions in ONE file
+  - currently lots of room for error, both in the server files and the getter query files
+- move the paypal prod and sandbox codes into const file
+- rename things to dancey.dance
+- link to the newest npm coeur package
+- better consistent NAMING for dynamic (vue) vs. static(mm) site content to make production scripts easier
+  - better copy system from live / vue side to the static side
+- "atlx" > dancey.dance
+- add a constants for graphcool or server connection to front-end
+  - name it something better?
+- generalize npm run atlx > to npm run localhost or something
+- if server is fixed:
+  - update TEST_PASSES and TEST_DANCE
+- documentation
+  - update data models
+- data
+  - split non-essential content into airtable
+  - only retain essential ticketing and login data through graphcool
+    - make it EASY for others to update the content, since airtable has sharing, etc.
+  - import/export to airtable updating 
+- awesomefont icon 4 > 5
+- package npm vue_local with the middleman build somehow? — moving things around is annoying, and not memorable
+
+
+
+### To Do List
+
+- later:
+  - admin endpoint
+    - purchases with name (from field data or ebay)
+    - export to csv
+    - export to airtable
+    - very printable, exportable
+    - total $ so far
+  - make this todo only for tech design
+  - create a generalized todo under main index
+  - create a section for dance event needs
+    - housing, volunteering, sound equipment, managing people (groups tasks, and set responsibility, accounting+finance how early to do things, budgeting, finding/booking spaces, transportation, hiring teachers, ticketing, safe spaces, 
+  - note on PassPayload and MerchandisePayload comparison; custom Pass and Merch return vals
+    - note on the helper/index file
+- generalize from atlx to generic dance event
+- rename this section to the dance systems design; or break apart the technical and the design aspects?
+- add visual design and branding needs
+  - general brand requirements
+  - postcard requirements
+  - banner requirements
+- update notes to reflect the latest data model w/ actual schema
+- document server methods
+- quick writeup of how the entire graphql system works
+- later
+  - better dealing with ticket 'reservations'
+    - ticket price will reset after 60m
+      - users will have an hour before ticket prices update
+      - if 30 people visit the site and there are 20 tier 1 tickets, and every user buys a ticket, each of the 30 people will receive a tier 1 ticket 
+        - alternately "checking out" may add a "temporary queue hold" on a ticket but that could get unfair or complex
+      - close to price update, user has the option to "get more time" to make a choice
+      - at price update, if the price is different, the app and cart resets and the new price is shown
+      - idea is that it's ok if more than allotted people get tier 1 if a huge rush, bc most likely sales will remain high; should set a date condition too
+- add a paypal webhook instead of handling on client [later]
+- tested and works, do a writeup:
+    - add volunteering and housing info; wrap in markdown test
+
+
+
+
+
+
+
+- purchase module
+  - pre-launch
+    - set store.state.debug = false 
+    - comment out vue css
+    - set paypal to prod in store
+
+  - functionality:
+    - * later — add image placeholder for t-shirt data?
+
+  - notes
+    - notes on BasicID data model
+    - Purchase Flow
+      - Pay
+      - Create purchase object w/ receipt; not paid status
+      - PayPal (if available, or skip if free)
+      - Payment callback / review screen
+        - Add payment info (if avail, or free) to purchase
+        - send email payment confirm template
+      - Route
+        - special URL / receipt ID to review page
+      - notes on conditions resolver, and what they are, and how they work
+        - NOT_AVAILABLE:
+          - if a pass is before start OR under from # passes (e.g. sale hasn't started, or tier hasn't been reached
+        - SOLD_OUT:
+          - if a pass is after end OR above upto # passes (e.g. sale has ended, or tier is surpassed) 
+        - NOT_SELLING:
+          - overrides all conditions, and won't ever appear
+        - time-based
+          - start X
+          - end X
+        - sales-based
+          - from # passes
+          - upto # passes
+      - notes on input types for each pass, and what they are / how to use
+      - add store/index example db objects to notes; example passes and options
+
+
+  
+
+- rename Atlx > dcd / danceydance
+- rename horrible component/file names, confusing (atlx_purchase v. atlxpurchase)
+
+- atlx admin
+  - authenticated atlx users only
+  - see who purchased tickets, merchandise
+  - data / csv / airtable integration
+
+
+
+
+
+
+
+
+
+### Done! 
+
+- design:
+  - make it all prettier
+  - checkout page
+  - review page
+- buy dancey.dance domain
+
+
+- 1/22/18
+  - so far... for dancesrc and atlx2018
+  - design/notes pages setup
+  - basic design + style guide up
+  - basic vue framework implemented
+  - vue / graphcool communication works
+  - data model setup for graphcool / gql
+  - mailgun service works perfectly
+  - got vuex store working properly w/ example
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<% source = current_page.data.source || "./" %>
+
+<main markdown="1">
+  
+## DanceSrc Notes
+
+
+#### What is this about?
+
+What do you want to get out of this?
+
+Dump all the thoughts, notes, and stuff for Dance Source here.
+
+
+### Names!
+
+- Better Dance Registration (bdr.dance)
+- dancex.org (exists!) (dance exchange org)
+- ticky.xyz
+- consider.dance
+- helper.dance
+- src.dance
+- lindy.world
+- getaway.dance
+- dancey.dance ** not taken!! ** 
+- fancy.dance
+- taken:
+  blues.club / lindy.club
+
+
+dance org toolkit
+- people can contribute
+- best practices
+- tutorial 
+
+where do all the resources live 
+
+flexibility: lots of dance orgs have their own ways 
+- link sharing: lots of work still done over google drive
+- know where all the resources are
+- know what all the people are doing
+
+different dances need different things
+- modularity
+- housing? instructors? tracks? multiple dances/rooms? etc.
+- can’t code for everything
+
+—————————
+
+User-Side
+
+Housing
+
+Volunteer Signup
+
+—————————
+
+Org-Side
+
+Volunteer Org
+- creating slots
+- scheduling
+- backflling
+
+Venue Org
+- contacts
+- manager
+- schedule
+
+Housing Org
+- by host; manual process
+
+DJ &amp; music schedule organization
+- lots of spreadsheets
+
+Instructor Organization
+- payment, food preferences, housing
+
+Scheduling
+
+Contact Info for important ppl
+- DJs, organizers, etc.
+
+lead &amp; follow
+
+Registration 
+- payment
+- square
+- payment box
+- bands sharpies 
+- 
+
+
+
+
+
+
+
+
+ATLX Ideas
+http://atlx2018.com/
+
+sugarpush.com is the platform 
+
+- make it free. (except credit card fees of course)
+- focus on microservice API and existing site integration with possibility for landing page
+- modularized components like mind body 
+- band scheduling
+- TEACHER view
+- BAND view / touring schedule / lineup
+
+
+
+
+
+
+
+
+
+ATLX DJ Schedule
+
+
+Tentative Schedule:
+The following is the tentative schedule for ATLX 2017 during June 2nd - 4th:
+
+Friday Main: 8pm to 12am
+* ATLX will be working with GTDA to provide a band during this dance.  
+
+Friday Late: 12:30am to 4am
+Saturday Afternoon: 1pm to 5pm
+Saturday Main: 8pm to 12am
+* ATLX will try to provide a band during this dance. 
+Saturday Late: 12:30am to 4am
+Sunday Afternoon: 1pm to 5pm
+Sunday Evening: 8pm to 11pm
+
+
+
+
+
+
+
+
+atlx sunset - done- waiting for Robert to finish transferring domains
+
+
+
+
+eventbrite for dance
+
+discovery
+one off events and festivals
+teachers can organize classes
+- get paid easier 
+
+need a cash option / free option
+
+
+
+
+
+
+ATLX / DanceReg
+- make it free
+- make each thing into components / features / break it down
+- add components as features evolve
+
+
+
+
+—————————
+
+Other
+
+Messaging
+- blast messages to a group
+
+Data Management
+- CSV data export
+- financials and metrics
+- Names, email, payment, housing requests, volunteering usually done outside of scheduling (volunteer match—API?)
+
+
+### Change information &amp; Event Transfer
+Easy pass transferring
+- https://www.eventbrite.com/support/articles/en_US/How_To/how-to-update-your-ticket-registration-information?lg=en_US
+-
+
+Marketing
+- 
+
+Functional views for the organizer or mod
+- check in crew, housing crew, volunteer crew, accounting crew, etc.
+- lots of people still have hard copies; easily printed
+
+Guest List
+
+Night Event Manager (“EM”)
+
+Wristband colors at the door
+- how do you identify wristbands?
+
+Master Budget always done in Excel or G Docs
+- 
+
+Google Docs API import?
+
+Staff Sheet
+
+Sound Schedule
+- where sound ppl and equipment need to be
+- time+location
+- multi sound systems
+- how long does the system take to set up; where is it going?
+- what transportation, size; what fits? on schedule
+
+Volunteer List and Schedule
+- setup, teardown, transport
+- volunteer handlers
+
+Nashville runs a good org
+- blues dance nashville people—kenneth shipp
+
+Shirt / Merch
+- multi grid; men’s womens + sizes
+
+Transportation
+- instructors, bands, special guests
+- equipment?
+- people?
+
+––––––––
+
+Open Dance vs. DancerFly
+- OD: go page by page to set up fields
+- 
+
+————
+
+* Organizing people:
+no matter how techy we get, no amount of tech will optimize / fix:
+- better divide work, scope, accountability, strong leadership
+    - leader needs to delegate work, on time, be concrete
+- leadership skills
+    - (self starter? how to make people do stuff)
+- disengagement
+    - people didn’t feel they were utilized; proactiveness
+
+Pass Exchange w/ other organizers
+
+Publicity
+
+Leaders that model behavior they want, and have everyone understand the technology to get stuff done (whatever it is)
+
+Cities that do it well:
+- Nashville
+    - dedicated, spread the work, strong leader, regular meetings, call people out when they’re not doing work; who’s doing the work and who’s lagging behind; no nonsense and accountability
+- Boston
+    - two main people but are friends
+    - Sarah (Sweet Molasses) people person, designer-y
+    - Paul (organizer, spreadsheet, account/business person)
+
+Clear vision, expectations; get everyone in the same room
+Visiblity into what others are doing, buy-in, “what does it matter if I do the work”
+- environment you create; team or goal focused
+
+
+
+### Examples
+
+TRBX "Mobile" app:
+- http://rdublues.com/trbxmobile/
+
+
+
+### Competition / mini-SWOT
+
+Apparently OpenDance and LEWPS are both gone. Dancerfly is left but doesn't allow for any kind of event organization. There are NO SYSTEMS for integrating a purchasing system right into someone's site.
+
+- OpenDance
+  - CLOSING
+  - open-dance.net
+    - 2.5% service transaction fee
+    - http://open-dance.net/index.php/publicweb/rates
+  - https://www.lewps.com/
+    - lol interface
+    - 1% service transaction fee
+
+LEWPS
+  - CLOSING
+
+DancerFly
+  - nicely designed, but not flexible/fixed, like eventbrite
+  - mile high blues 
+    - https://dancerfly.com/mile-high-blues/mhb2017/order/shop/
+
+DanceCamps.org
+  - http://www.dancecamps.org/
+  - free but super janky
+
+
+
+### JourneyDance Data Objects
+
+These are _messy_ but whatever.
+
+
+
+- DanceEvents
+  - name
+  - settings
+  - housing
+  - volunteers
+  - passes []
+  - vipPasses
+  - merch
+  - pricing — stored tiers and stuff; hardcoded
+  - maxDancers
+  - isOpen
+  - isMerchOpen
+  - merchandise — yup redundant
+
+- Merchandise
+  - type (shirt, etc.)
+  - price
+  - data
+  - date
+  - localDate
+  - pickedUp
+  - pickedUpTime
+  - modNotes
+  - lastUpdatedBy
+  - status
+  - eventId
+  - userId
+  - dissociated
+  - dissociatedEventId
+
+- Passes
+  - date
+  - localDate
+  - firstName
+  - lastName
+  - userName
+  - scene
+  - checkedIn
+  - lastCheckedIn
+  - modNotes
+  - lastUpdatedBy
+  - data
+  
+  - // might just be copied and pasted junk?
+  - itemName
+  - price
+  - tier
+  - passId
+  - passNumber
+  - status
+  - queued
+  - eventId
+  - userId
+  - userEditable
+  - transactionId
+  - vip
+  - dissociated
+  - dissociatedEventId
+  
+- Transactions
+  - date
+  - localDate
+  - userId
+  - eventId
+  - modNotes
+  - lastUpdatedBy
+  - data
+  - totalPrice
+  - transactionId
+  - paymentMethod
+
+  
+
+</main>
+
