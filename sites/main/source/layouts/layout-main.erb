@@ -1,0 +1,19 @@
+
+<% title = current_page.data.title || config.site_title %>
+
+<!doctype html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%= partial '/partials/head' %>
+  </head>
+  <body class="_loader --circular">
+    <span id="top"></span>
+    <div class="_main">
+      <%= yield %>
+    </div>
+
+  </body>
+</html>
+
+<script src="../assets/javascripts/site.js" type="text/javascript"></script>

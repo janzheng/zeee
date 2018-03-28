@@ -1,0 +1,186 @@
+
+
+// STYLES
+$color-purple:        #8A1FB9;  ._color-purple {color:$color-purple} ._color-bg-purple { background-color: $color-purple }
+
+$color-main:          $color-purple;
+$color-secondary:     $color-purple;
+$color-tertiary:      $color-purple;    
+$color-active:        $color-purple;   
+
+$color-hover:          $color-purple;
+
+// stylecoeur base
+@import '../coeur/stylecoeur/index.scss';
+
+@import 'typography';
+
+
+.top {
+  z-index: 99900;
+  text-decoration: none;
+  font-size: $size-p9;
+  font-weight: 700;
+  line-height: $size-p3;
+  position: fixed;
+  left: -$size-half;
+  top: 0px;
+  letter-spacing: -$size-p1 + 4px;
+
+  .eee {
+    color: $color-ui;
+  }
+}
+
+.intro {
+  padding-top: $size-p9;
+  padding-left: $size-2;
+  padding-right: $size-2;
+  @include screen-sm {
+    position: sticky;
+    // top: $size-p5;
+    top: 0;
+  }
+
+  // sizer restrictions for mobile
+  @include screen-xs {
+    height: initial !important;
+    padding-bottom: $size-2;
+  }
+}
+
+
+a {
+  text-decoration: underline;
+  @extend %ease;
+  border: 0;
+}
+
+
+.right {
+  position: relative;
+  z-index: 200;
+  // background: rgba($color-bg, 0.7);
+  // box-shadow: 0 0 $size-p4 $size-p5 rgba($color-bg, 0.7);
+
+  @include screen-xs {
+    padding: $size-2;
+  }
+  @include screen-sm-only {
+    padding-left: $size-2;
+  }
+  @include screen-sm {
+    line-height: $size-p3;
+    padding-top: $size-p9;
+    padding-right: $size-2;
+    // margin-top:  $size-p5;
+    max-height: 100%;
+    overflow: scroll;
+  }
+}
+
+
+.segment {
+  margin-bottom: $size-p3;
+}
+
+
+
+// general styles
+
+h1 {
+  font-size: $size-p5;
+  line-height: $size-p4;
+}
+h2 {
+  font-size: $size-p5;
+  line-height: $size-p4;
+  font-weight: 600;
+
+  font-size: $size-m1;
+  line-height: $size-base;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+h1, h2 {
+  padding-top: 0;
+}
+
+h3 {
+  font-weight: normal;
+  color: $color-gray-dark;
+  font-size: $font-h2;
+  line-height: $font-h2 * 1.5;
+  padding: 0;
+  display: inline-block;
+  position: relative;
+  // padding-top: 0;
+  // padding-top: $size-p3;
+
+  // &:first-of-type {
+  //   padding-top: 0;
+  // }
+}
+
+
+._expander {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  position: relative;
+  @extend %ease-fast;
+
+  h3 {
+    line-height: $size-p6;
+  }
+
+  h3:after {
+    content: ' ';
+    @extend %ease-fast;
+    display: inline-block;
+    height: $size-base - 3px;
+    background-color: rgba($color-hover, 0.15);
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    width: 0%;
+  }
+  &:hover {
+    h3 { color: $color-hover; }
+    background: transparent;
+    @extend %ease-fast;
+    h3:after {
+      height: $size-base - 3px;
+      left: 0%;
+      width: 100%;
+    }
+  }
+  &.--open {
+    margin-bottom: $size-2;
+    @extend %ease-fast;
+  }
+}
+
+
+.phagedirtitle {
+  color: black;
+  @extend h3;
+  @extend %font-title;
+
+  span:first-of-type {
+    font-weight: 700;
+    padding-left: $size-half;
+  }
+  white-space: nowrap;
+  letter-spacing: -1.2px;
+}
+
+
+
+
+
+
+
+

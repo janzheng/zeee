@@ -1,16 +1,16 @@
 {
-  "name": "jsacher",
+  "name": "zeeeco",
   "version": "1.0.0",
-  "description": "Jessica Sacher Portfolio",
+  "description": "Zeee.co",
   "author": "Jan",
   "private": true,
   "scripts": {
     "commit": "git add . -A ; git commit ; git push origin master ",
-    "start": "cd sites/portfolio; npm run start",
-    "stage": "cd sites/portfolio; npm run stage",
-    "prod": "cd sites/portfolio; npm run prod"
+    "start": "cd sites/main; npm run start",
+    "stage": "cd sites/main; npm run stage",
+    "prod": "cd sites/main; npm run prod"
   },
   "dependencies": {
-    "coeur": "^0.1.47"
+    "coeur": "0.1.51"
   }
 }
