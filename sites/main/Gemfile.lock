@@ -80,7 +80,7 @@ GEM
       ptools
     middleman-search (0.10.0)
       middleman-core (>= 3.2)
-      nokogiri (~> 1.6)
+      nokogiri (~> 1.8.1)
       therubyracer (~> 0.12.2)
     middleman-syntax (3.0.0)
       middleman-core (>= 3.2)
