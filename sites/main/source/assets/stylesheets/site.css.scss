@@ -81,7 +81,7 @@ a {
 
 
 .segment {
-  margin-bottom: $size-p3;
+  margin-bottom: $size-p9;
 }
 
 
@@ -133,7 +133,10 @@ h3 {
   @extend %ease-fast;
 
   h3 {
-    line-height: $size-p6;
+    // line-height: $size-p6;
+    line-height: $size-p4;
+    margin-top: $size-half;
+    padding-bottom: $size-half;
   }
 
   h3:after {
@@ -177,7 +180,12 @@ h3 {
   letter-spacing: -1.2px;
 }
 
-
+// work in progress projects 
+.--wip {
+  &, * {
+    color: $color-gray-lightest !important;
+  }
+}
 
 
 
