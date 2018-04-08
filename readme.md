@@ -5,9 +5,8 @@
 
 ## Products for a Purpose
 
-zeee.co designs and builds technology to further creative, nonprofit, research, and health tech endeavors.
+zeee.co designs and builds technology to further endeavors in creative, nonprofit, research, and health technology.
 
-
-This is the stuff for the main site.
+This is the all the code for the main site.
 
 Feel free to fork.

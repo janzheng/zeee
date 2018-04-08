@@ -1,0 +1,11 @@
+{
+  "name": "readability",
+  "version": "1.0.0",
+  "description": "content getter",
+  "author": "Jan",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "readability-node": "^0.1.0"
+  }
+}

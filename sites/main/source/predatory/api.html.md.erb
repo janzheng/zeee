@@ -1,0 +1,169 @@
+---
+layout: layout-main
+title: Predatory
+source: ../
+---
+
+
+
+<script>
+  function getFull() {
+    $('#_query').text(`https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory`)
+    console.log('running full')
+    $('#_output').text(`working...`).removeClass('_hidden')
+    $.get( `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory`, function() {
+    })
+    .done(function(data) {
+      $('#_output').html(`
+          <pre>${JSON.stringify(data, null, '  ')}</pre>
+        `)
+    })
+    .error(function(data) {
+      console.log('get full error:', data)
+    })
+  }
+  function getQuery() {
+    const query = escape($('#query').val())
+    $('#_query').text(`https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory?search=${query}`).removeClass('_hidden')
+    $('#_output').text(`working...`)
+    console.log('running query:' , query)
+    $.get( `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory?search=${query}`, function() {
+    })
+    .done(function(data) {
+      $('#_output').html(`
+          <pre>${JSON.stringify(data, null, '  ')}</pre>
+        `)
+    })
+    .error(function(data) {
+      console.log('getQuery error:', data)
+    })
+  }
+</script>
+
+
+
+
+
+
+
+<div markdown="0">
+<%= partial 'partials/top'%>
+<%= partial 'partials/nav'%>
+</div>
+
+<div class="headspace_sm"  >
+
+
+<div class="_center-margin _width-content-magic " markdown="1">
+<!-- 
+<div class="_nav-predatory _buttonGroup --outline _margin-bottom-2" >
+  <a href="/predatory/" class="_button --short --active">Search</a>
+  <a href="/predatory/api" class="_button --short">API</a>
+</div> -->
+
+<div class="_nav-predatory">
+<a href="/predatory/" class="_inline-block">Search</a>
+<a href="/predatory/api" class="_inline-block --active">API</a>
+</div>
+
+
+
+# Predatory API
+
+This API returns a list of journals as described on the “Beall’s List of predatory journals and publishers” found at [https://beallslist.weebly.com/](https://beallslist.weebly.com/). 
+
+The API uses [webtask.io](webtask.io) and is rate limited at one request per second, and does not require any authentication. If you need a higher read volume, please cache or download the data.
+
+The API only accepts requests over https.
+
+
+
+## Basics
+
+To retrieve the full data set (~400kb), perform a GET on `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory`
+
+The API returns a JSON object: 
+
+~~~
+{
+  meta: 
+    message: description and disclaimer
+    dateUpdated: date last synchronized with the Beall’s List
+  bealls:
+    publishers: the publishers found on the Beall’s List
+    standalone: standalone journals found on the Beall’s List
+    hijacked: hijacked journals found on the Beall’s List
+    authentic: authentic journals found on the Beall’s List
+}
+~~~
+
+
+## Search Queries
+
+You can also add a search query to the end of the url with `?search=`. To search for Frontiers in Microbiology, add: `?search=frontiers%20in%20microbiology` to get a filtered set of results. 
+Adding a query will also return a list of matches against DOAJ’s database. 
+
+~~~
+https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory?search=frontiers%20in%20microbiology
+~~~
+
+The search query returns an additional `doaj` object:
+
+~~~
+{
+  meta: 
+    message: description and disclaimer
+    dateUpdated: date last synchronized with the Beall’s List
+  bealls:
+    publishers: the publishers found on the Beall’s List
+    standalone: standalone journals found on the Beall’s List
+    hijacked: hijacked journals found on the Beall’s List
+    authentic: authentic journals found on the Beall’s List
+  doaj:
+    count: number of titles found on DOAJ with the keyword
+    journals: an array of journals that include the given keyword
+      title: name of the journal
+      links: URL of the journal
+}
+~~~
+
+
+## Demo
+
+Click Get List or Search to see the results here.
+
+<div class="_form-control">
+  <button class="_button _margin-right-2" onClick="getFull()" >Get Full List</button>
+  <input id="query" class="_form-input --button" type="text" name="query" value='frontiers in microbiology' placeholder='frontiers in microbiology'/>
+  <button class="_button _margin-none" onClick="getQuery()" >Search</button>
+</div>
+
+<div id="_query" class="_color-bg-ui-light _padding _hidden">
+</div>
+
+<div id="_output" class="_output _color-bg-ui-light _padding">
+  Click `Get Full List` or `Search` to get a data output
+</div>
+
+
+## Disclaimer
+
+This API does not make any assumptions or conclusions about the data found on the list, it merely provides API wrapper for the data. This code is an unlicensed, unsolicited mirror of the data, and does not make any warranties around the validity of the accuracy of the data. To make better decisions about the predatory nature of a journal, please visit [https://thinkchecksubmit.org](https://thinkchecksubmit.org). For a more up-to-date service, check out [Cabell’s List](https://www2.cabells.com/). 
+
+</div>
+
+</div>
+
+
+<style>
+#_output {
+  max-height: 1200px;
+  overflow: scroll;
+}
+pre {
+  white-space: pre;
+}
+</style>
+
+
+

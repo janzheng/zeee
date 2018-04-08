@@ -32,8 +32,16 @@ $color-hover:          $color-purple;
   }
 }
 
-.intro {
+.headspace {
   padding-top: $size-p9;
+}
+.headspace_sm {
+  padding-top: $size-p6;
+}
+
+
+.intro {
+  @extend .headspace;
   padding-left: $size-2;
   padding-right: $size-2;
   @include screen-sm {
@@ -81,7 +89,13 @@ a {
 
 
 .segment {
-  margin-bottom: $size-p9;
+  margin-bottom: $size-p7;
+
+  &:first-of-type {
+    h4 {
+      padding-top: 0;
+    }
+  }
 }
 
 
@@ -91,23 +105,8 @@ a {
 h1 {
   font-size: $size-p5;
   line-height: $size-p4;
-}
-h2 {
-  // font-size: $size-p5;
-  // line-height: $size-p4;
-  // font-weight: 600;
-
-  font-size: $size-m1;
-  line-height: $size-base;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-h1, h2 {
   padding-top: 0;
 }
-
 h3 {
   font-weight: normal;
   color: $color-gray-dark;
@@ -124,6 +123,44 @@ h3 {
   // }
 }
 
+h4 {
+  // font-size: $size-p5;
+  // line-height: $size-p4;
+  // font-weight: 600;
+
+  padding-top: $size-p3;
+  font-size: $size-m1;
+  line-height: $size-base;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+}
+
+%hover-middleOut {
+  &:after {
+    content: ' ';
+    @extend %ease-fast;
+    display: inline-block;
+    height: $size-base - 3px;
+    background-color: rgba($color-hover, 0.15);
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    width: 0%;
+  }
+
+  &:hover {
+    @extend %ease-fast;
+    color: $color-hover;
+    &:after {
+      height: $size-base - 3px;
+      left: 0%;
+      width: 100%;
+    }
+  }
+}
+
 
 ._expander {
   padding: 0;
@@ -137,28 +174,11 @@ h3 {
     line-height: $size-p4;
     margin-top: $size-half;
     padding-bottom: $size-half;
-  }
-
-  h3:after {
-    content: ' ';
-    @extend %ease-fast;
-    display: inline-block;
-    height: $size-base - 3px;
-    background-color: rgba($color-hover, 0.15);
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    width: 0%;
+    @extend %hover-middleOut;
   }
   &:hover {
-    h3 { color: $color-hover; }
     background: transparent;
     @extend %ease-fast;
-    h3:after {
-      height: $size-base - 3px;
-      left: 0%;
-      width: 100%;
-    }
   }
   &.--open {
     margin-bottom: $size-2;
@@ -188,7 +208,40 @@ h3 {
 }
 
 
+// used on projects pages to go back home
+._nav {
+  padding-right: $size-2;
+  a {
+    text-decoration: none;
+    @extend h3;
+    font-size: $size-p2;
+    @extend %hover-middleOut;
+  }
+}
 
+._buttonGroup {
+  a {
+    text-decoration: none;
+  }
+  .--active {
+    background: $color-active !important;
+    color: $color-white !important;
+  }
+}
+
+._nav-predatory {
+  padding-bottom: $size-2;
+  a {
+    text-decoration: none;
+    @extend h3;
+    font-size: $size-p2;
+    @extend %hover-middleOut;
+    margin-right: $size-base;
+  }
+  a.--active {
+    text-decoration: underline;
+  }
+}
 
 
 

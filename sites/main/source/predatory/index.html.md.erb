@@ -1,0 +1,228 @@
+---
+layout: layout-main
+title: Predatory
+source: ../
+---
+
+
+
+<script>
+  function reExpand(){
+    // quick unbind just in case
+    // also don't want clicking on expander closing by accident
+    $('._expander').off('click');
+    $('._expander-title').on('click', function() {
+      console.log($(this).parent())
+      if($(this).parent().hasClass('--open')) {
+        $(this).parent().removeClass('--open')
+      } else {
+        $(this).parent().addClass('--open');
+      }
+    });
+  }
+  function renderDoaj(doaj) {
+    console.log('doaj;',doaj)
+
+    let rowOutput = ''
+    for (let row of doaj.journals) {
+      rowOutput += `<tr><td><a href="${row.link}">${row.title}</a></td><td><a href="${row.link}">${row.link}</a></td></tr>`
+    }
+
+    const template = `
+      <div class="_expander --icon-none">
+        <div class="_expander-title"><h3 class="">DOAJ (${doaj.count})</h3></div>
+        <div class="_table-container">
+        <table class="_table">
+          ${rowOutput}
+        </table>
+        </div>
+      </div>
+    `
+    return template;
+  }
+
+  function render(d, bealls) {
+    let rowOutput = ''
+    // console.log('d', d)
+    for (let row of bealls[d]) {
+      // console.log(row)
+
+      let name = '';
+      let link = '';
+      let links = '';
+      let note = '';
+
+      // some links are missing from the list
+      if (row.links.length > 0) {
+        link = row.links[0];
+        for (link of row.links) {
+          links += `<a class="_block" href="${link}">Link</a>`
+        }
+      }
+
+      if (row.name)
+        name = row.name
+
+      if (row.note)
+        note = row.note
+
+      rowOutput += `
+        <tr class="--group"><td data-title="name"><a href="${link}">${name.trim()}</a></td><td data-title="note">${note.trim()}</td><td class="" data-title="links">${links}</td>
+        </tr>
+      `;
+    }
+
+    const template = `
+      <div class="_expander --icon-none">
+        <div class="_expander-title"><h3 class="_font-capitalize">${d} (${bealls[d].length})</h3></div>
+        <div class="_table-container">
+        <table class="_table --stack-xs">
+          <thead><tr><th>Name</th><th>Notes</th><th>Link</th></tr></thead>
+          <tbody>
+            ${rowOutput}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    `
+    return template;
+
+  }
+
+  function getFull() {
+    $('#_output').html(`<h3>Loading list...</h3>`).removeClass('_hidden')
+    $.get( `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory`, function() {
+    })
+    .done(function(data) {
+      /*
+        format:
+          container
+            table
+              [name](link) note
+      */
+      // $('#_output').html(`
+      //     <pre>${JSON.stringify(data, null, '  ')}</pre>
+      //   `)
+      let output = "";
+      for (d of Object.keys(data.bealls)) {
+        output += render(d, data.bealls)
+      }
+      $('#_output').html(output)
+
+      // re-init clicker
+      reExpand();
+    })
+    .error(function(data) {
+      console.log('get full error:', data)
+    })
+  }
+
+
+
+  function getQuery() {
+
+    if($('#query').val() == '')
+      getFull()
+    else {
+      const query = escape($('#query').val())
+      $('#_output').html(`<h3>Loading list...</h3>`).removeClass('_hidden')
+      console.log('running query:' , query)
+      $.get( `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory?search=${query}`, function() {
+      })
+      .done(function(data) {
+        console.log('query data', data)
+        let output = "";
+
+        // add DOAJ stuff
+        output += renderDoaj(data.doaj)
+
+        for (d of Object.keys(data.bealls)) {
+          output += render(d, data.bealls)
+        }
+        $('#_output').html(output)
+
+        // re-init clicker
+        reExpand();
+      })
+      .error(function(data) {
+        console.log('getQuery error:', data)
+      })
+    }
+  }
+
+  $(document).ready(function() {
+    // load full immediately on page load
+    getFull();
+    $(document).on('keydown', function(e) {
+      if(e && e.keyCode == 13) {
+        getQuery()
+      }
+    })
+  });
+</script>
+
+
+
+
+
+
+
+<div markdown="0">
+<%= partial 'partials/top'%>
+<%= partial 'partials/nav'%>
+</div>
+
+<div class="headspace_sm"  >
+
+
+<div class="_center-margin _width-content-magic " markdown="1">
+<!-- 
+<div class="_nav-predatory _buttonGroup --outline _margin-bottom-2" >
+  <a href="/predatory/" class="_button --short --active">Search</a>
+  <a href="/predatory/api" class="_button --short">API</a>
+</div> -->
+
+<div class="_nav-predatory">
+<a href="/predatory/" class="--active _inline-block">Search</a>
+<a href="/predatory/api.html" class="_inline-block">API</a>
+</div>
+
+
+
+# Predatory Search
+
+Curious if a journal might be predatory? 
+
+View or search a journal name against [Directory of Open Access Journals](https://doaj.org)the cached version of “Beall’s List of predatory journals and publishers” found at [https://beallslist.weebly.com/](https://beallslist.weebly.com/). 
+
+
+<div class="_wrapper _padding-bottom-2" markdown="1">
+<div class="_form-control">
+  <input id="query" class="_form-input --button --width-full" type="text" name="query" value='frontiers in microbiology' placeholder='frontiers in microbiology'/>
+  <button class="_button _margin-none" onClick="getQuery()" >Search</button>
+</div>
+
+<div id="_output" class="_output _padding-bottom-2 _margin-bottom-2" markdown="0">
+</div>
+
+### Disclaimer
+
+This API does not make any assumptions or conclusions about the data found on the list, it merely provides API wrapper for the data. This code is an unlicensed, unsolicited mirror of the data, and does not make any warranties around the validity of the accuracy of the data. To make better decisions about the predatory nature of a journal, please visit [https://thinkchecksubmit.org](https://thinkchecksubmit.org). For a more up-to-date service, check out [Cabell’s List](https://www2.cabells.com/). 
+
+</div>
+
+
+
+
+<style>
+._table-container {
+  max-height: 2400px;
+  overflow: scroll;
+}
+td:first-of-type a {
+  text-decoration: none;
+}
+
+</style>
+
+
