@@ -12,7 +12,6 @@ source: ../
     // also don't want clicking on expander closing by accident
     $('._expander').off('click');
     $('._expander-title').on('click', function() {
-      console.log($(this).parent())
       if($(this).parent().hasClass('--open')) {
         $(this).parent().removeClass('--open')
       } else {
@@ -41,11 +40,86 @@ source: ../
     return template;
   }
 
-  function render(d, bealls) {
+
+
+
+
+
+  function renderHijacked(d, bealls, desc="") {
+
     let rowOutput = ''
-    // console.log('d', d)
     for (let row of bealls[d]) {
-      // console.log(row)
+      // console.log('drow', row)
+
+      let name = '';
+      let authName = '';
+      let link = '', authLink = '';
+      let links = '', authLinks = '';
+      let note = '';
+
+      if (row.name)
+        name = row.name
+
+      if (row.authName)
+        authName = row.authName
+
+      // some links are missing from the list
+      if (row.links.length > 0) {
+        link = row.links[0];
+        for (let _link of row.links) {
+          links += `<a class="_block" href="${_link}">Link</a>`
+        }
+      }
+
+      // some links are missing from the list
+      if (row.authLinks.length > 0) {
+        authLink = row.authLinks[0];
+        for (let _link of row.authLinks) {
+          authLinks += `<a class="_block" href="${_link}">Link</a>`
+        }
+      }
+
+      rowOutput += `
+        <tr class="--group">
+          <td data-title="name"><a href="${link}">${name.trim()}</a></td>
+          <td data-title="links">${links}</td>
+          <td class="" data-title="authName"><a class="_underline-none" href="${authLink}">${authName.trim()}</a></td>
+          <td class="" data-title="authLinks">${authLinks}</td>
+        </tr>
+      `;
+    }
+
+    const template = `
+      <div class="_expander --icon-none">
+        <div class="_expander-title">
+          <h3 class="_font-capitalize">${d} (${bealls[d].length})</h3>
+          <div class="_padding-bottom-2">${desc}</div>
+        </div>
+        <div class="_table-container">
+        <table class="_table --stack-xs">
+          <thead><tr><th>Hijacked Name</th><th>Hijacked Link</th><th>Authentic</th><th>Authentic Link</th></tr></thead>
+          <tbody>
+            ${rowOutput}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    `
+    return template;
+
+  }
+
+
+
+
+
+  function render(d, bealls, desc="") {
+    // console.log('d', d)
+    if(d == 'hijacked')
+      return renderHijacked(d, bealls, desc)
+
+    let rowOutput = ''
+    for (let row of bealls[d]) {
 
       let name = '';
       let link = '';
@@ -55,8 +129,8 @@ source: ../
       // some links are missing from the list
       if (row.links.length > 0) {
         link = row.links[0];
-        for (link of row.links) {
-          links += `<a class="_block" href="${link}">Link</a>`
+        for (_link of row.links) {
+          links += `<a class="_block" href="${_link}">Link</a>`
         }
       }
 
@@ -74,7 +148,10 @@ source: ../
 
     const template = `
       <div class="_expander --icon-none">
-        <div class="_expander-title"><h3 class="_font-capitalize">${d} (${bealls[d].length})</h3></div>
+        <div class="_expander-title">
+          <h3 class="_font-capitalize">${d} (${bealls[d].length})</h3>
+          <div class="_padding-bottom-2">${desc}</div>
+        </div>
         <div class="_table-container">
         <table class="_table --stack-xs">
           <thead><tr><th>Name</th><th>Notes</th><th>Link</th></tr></thead>
@@ -105,7 +182,7 @@ source: ../
       //   `)
       let output = "";
       for (d of Object.keys(data.bealls)) {
-        output += render(d, data.bealls)
+        output += render(d, data.bealls, data.meta[d])
       }
       $('#_output').html(output)
 
@@ -150,9 +227,33 @@ source: ../
     }
   }
 
+
+  // function used to zip hijacked and authentic together for v1 > v2
+  // function zip() {
+  //   $('#_output').html(`<h3>Loading list...</h3>`).removeClass('_hidden')
+  //   $.get( `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory`, function() {
+  //   })
+  //   .done(function(data) {
+  //     let hilist = []
+  //     for (var d in data.bealls['hijacked']) {
+  //       hilist.push({
+  //         name: data.bealls['hijacked'][d].name,
+  //         links: data.bealls['hijacked'][d].links,
+  //         authName: data.bealls['authentic'][d].name,
+  //         authLinks: data.bealls['authentic'][d].links,
+  //       })
+  //     }
+  //     console.log(JSON.stringify(hilist))
+  //   })
+  //   .error(function(data) {
+  //     console.log('get full error:', data)
+  //   })
+  // }
+
   $(document).ready(function() {
     // load full immediately on page load
     getFull();
+    // zip()
     $(document).on('keydown', function(e) {
       if(e && e.keyCode == 13) {
         getQuery()

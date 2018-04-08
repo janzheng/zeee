@@ -7521,7 +7521,7 @@ html._modal-html {
   ._expander.--open ._expander-title ~ * {
     height: auto;
     opacity: 1;
-    display: initial; }
+    display: inherit; }
 
 ._infobox {
   grid-gap: 0 !important;
@@ -7630,7 +7630,7 @@ html._modal-html {
   ._expander.--open ._expander-title ~ * {
     height: auto;
     opacity: 1;
-    display: initial; }
+    display: inherit; }
 
 ._blog-item {
   display: block;

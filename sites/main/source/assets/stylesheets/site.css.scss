@@ -170,11 +170,23 @@ h4 {
   @extend %ease-fast;
 
   h3 {
-    // line-height: $size-p6;
     line-height: $size-p4;
     margin-top: $size-half;
     padding-bottom: $size-half;
     @extend %hover-middleOut;
+  }
+  ._expander-title {
+    &:hover {
+      h3 {
+        @extend %ease-fast;
+        color: $color-hover;
+        &:after {
+          height: $size-base - 3px;
+          left: 0%;
+          width: 100%;
+        }
+      }
+    }
   }
   &:hover {
     background: transparent;

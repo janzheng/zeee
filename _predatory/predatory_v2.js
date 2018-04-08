@@ -39,7 +39,8 @@ function getFiltered(source, query) {
     if(el.name !==undefined) {
       if (
         el.name.toLowerCase().includes(query.toLowerCase()) ||
-        el.note.toLowerCase().includes(query.toLowerCase())
+        (el.note && el.note.toLowerCase().includes(query.toLowerCase()))
+        // el.note doesn't exist for hijacked journals
       ) {
         // console.log(el)
         return true;
@@ -66,8 +67,7 @@ function getStorage(ctx) {
           bealls: {
             publishers: getFiltered(data.publishers, query),
             standalone: getFiltered(data.standalone, query),
-            hijacked: getFiltered(data.hijacked, query),
-            authentic: getFiltered(data.authentic, query)
+            hijacked: getFiltered(data.hijacked, query)
           }
         });
       }
