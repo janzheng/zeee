@@ -1,0 +1,289 @@
+
+
+<!doctype html>
+<html>
+  <head>
+    <title>Predatory</title>
+    
+  
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="google" content="notranslate">
+  <meta http-equiv="Content-Language" content="en">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- prevents Google for indexing this page -->
+  <!-- <meta name="robots" content="noindex"> -->
+
+  <!-- facebook tags -->
+  <!-- <meta property="og:url"                content="http://www.nytimes.com/2015/02/19/arts/international/when-great-minds-dont-think-alike.html" />
+  <meta property="og:type"               content="article" />
+  <meta property="og:title"              content="When Great Minds Don’t Think Alike" />
+  <meta property="og:description"        content="How much does culture influence creative thinking?" />
+  <meta property="og:image"              content="http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg" />
+  -->
+  
+  <!-- external -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/ScrollMagic.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/plugins/animation.gsap.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/plugins/debug.addIndicators.js"></script> -->
+
+  <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+  <!-- <link href="https://fonts.googleapis.com/css?family=Quicksand:500,700" rel="stylesheet"> -->
+  <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet"> -->
+
+  <!-- <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script> -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116553139-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-116553139-1');
+  </script>
+
+
+  <!-- local -->
+  <link rel="icon" type="image/png" href=../assets/images/z3.png >
+  <!-- <link href=../stylesheets/highlighting.css rel="stylesheet" > -->
+  <link href=../assets/stylesheets/site.css rel="stylesheet" >
+  <script src=../assets/javascripts/plugins/jquery.min.js ></script>
+  <script src= ../assets/coeur/scriptcoeur/smoothScroll.js></script>
+  <script src=../assets/coeur/scriptcoeur/sizer.js ></script>
+  <script src=../assets/javascripts/site.js ></script>
+
+
+  <script src= .././assets/coeur/scriptcoeur/sticky.js></script>
+
+
+  
+  </head>
+  <body class="_loader --circular">
+    <span id="top"></span>
+    <div class="_main">
+      
+<script>
+  function reExpand(){
+    // quick unbind just in case
+    // also don't want clicking on expander closing by accident
+    $('._expander').off('click');
+    $('._expander-title').on('click', function() {
+      console.log($(this).parent())
+      if($(this).parent().hasClass('--open')) {
+        $(this).parent().removeClass('--open')
+      } else {
+        $(this).parent().addClass('--open');
+      }
+    });
+  }
+  function renderDoaj(doaj) {
+    console.log('doaj;',doaj)
+
+    let rowOutput = ''
+    for (let row of doaj.journals) {
+      rowOutput += `<tr><td><a href="${row.link}">${row.title}</a></td><td><a href="${row.link}">${row.link}</a></td></tr>`
+    }
+
+    const template = `
+      <div class="_expander --icon-none">
+        <div class="_expander-title"><h3 class="">DOAJ (${doaj.count})</h3></div>
+        <div class="_table-container">
+        <table class="_table">
+          ${rowOutput}
+        </table>
+        </div>
+      </div>
+    `
+    return template;
+  }
+
+  function render(d, bealls) {
+    let rowOutput = ''
+    // console.log('d', d)
+    for (let row of bealls[d]) {
+      // console.log(row)
+
+      let name = '';
+      let link = '';
+      let links = '';
+      let note = '';
+
+      // some links are missing from the list
+      if (row.links.length > 0) {
+        link = row.links[0];
+        for (link of row.links) {
+          links += `<a class="_block" href="${link}">Link</a>`
+        }
+      }
+
+      if (row.name)
+        name = row.name
+
+      if (row.note)
+        note = row.note
+
+      rowOutput += `
+        <tr class="--group"><td data-title="name"><a href="${link}">${name.trim()}</a></td><td data-title="note">${note.trim()}</td><td class="" data-title="links">${links}</td>
+        </tr>
+      `;
+    }
+
+    const template = `
+      <div class="_expander --icon-none">
+        <div class="_expander-title"><h3 class="_font-capitalize">${d} (${bealls[d].length})</h3></div>
+        <div class="_table-container">
+        <table class="_table --stack-xs">
+          <thead><tr><th>Name</th><th>Notes</th><th>Link</th></tr></thead>
+          <tbody>
+            ${rowOutput}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    `
+    return template;
+
+  }
+
+  function getFull() {
+    $('#_output').html(`<h3>Loading list...</h3>`).removeClass('_hidden')
+    $.get( `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory`, function() {
+    })
+    .done(function(data) {
+      /*
+        format:
+          container
+            table
+              [name](link) note
+      */
+      // $('#_output').html(`
+      //     <pre>${JSON.stringify(data, null, '  ')}</pre>
+      //   `)
+      let output = "";
+      for (d of Object.keys(data.bealls)) {
+        output += render(d, data.bealls)
+      }
+      $('#_output').html(output)
+
+      // re-init clicker
+      reExpand();
+    })
+    .error(function(data) {
+      console.log('get full error:', data)
+    })
+  }
+
+
+
+  function getQuery() {
+
+    if($('#query').val() == '')
+      getFull()
+    else {
+      const query = escape($('#query').val())
+      $('#_output').html(`<h3>Loading list...</h3>`).removeClass('_hidden')
+      console.log('running query:' , query)
+      $.get( `https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/predatory?search=${query}`, function() {
+      })
+      .done(function(data) {
+        console.log('query data', data)
+        let output = "";
+
+        // add DOAJ stuff
+        output += renderDoaj(data.doaj)
+
+        for (d of Object.keys(data.bealls)) {
+          output += render(d, data.bealls)
+        }
+        $('#_output').html(output)
+
+        // re-init clicker
+        reExpand();
+      })
+      .error(function(data) {
+        console.log('getQuery error:', data)
+      })
+    }
+  }
+
+  $(document).ready(function() {
+    // load full immediately on page load
+    getFull();
+    $(document).on('keydown', function(e) {
+      if(e && e.keyCode == 13) {
+        getQuery()
+      }
+    })
+  });
+</script>
+
+<div>
+<a href="#top" class="_block --border-none top _padding-bottom _font-title">
+  zeee<span id="eee"></span>
+</a>
+
+
+<div class="_nav _right">
+  <a class="_margin-right" href="/">zeee.co</a>
+</div>
+
+</div>
+
+<div class="headspace_sm">
+
+
+<div class="_center-margin _width-content-magic ">
+    <!-- 
+<div class="_nav-predatory _buttonGroup --outline _margin-bottom-2" >
+  <a href="/predatory/" class="_button --short --active">Search</a>
+  <a href="/predatory/api" class="_button --short">API</a>
+</div> -->
+
+    <div class="_nav-predatory">
+<a href="/predatory/" class="--active _inline-block">Search</a>
+<a href="/predatory/api.html" class="_inline-block">API</a>
+</div>
+
+    <h1 id="predatory-search">Predatory Search</h1>
+
+    <p>Curious if a journal might be predatory?</p>
+
+    <p>View or search a journal name against <a href="https://doaj.org">Directory of Open Access Journals</a>the cached version of “Beall’s List of predatory journals and publishers” found at <a href="https://beallslist.weebly.com/">https://beallslist.weebly.com/</a>.</p>
+
+    <div class="_wrapper _padding-bottom-2">
+      <div class="_form-control">
+  <input id="query" class="_form-input --button --width-full" type="text" name="query" value="frontiers in microbiology" placeholder="frontiers in microbiology" />
+  <button class="_button _margin-none" onclick="getQuery()">Search</button>
+</div>
+
+      <div id="_output" class="_output _padding-bottom-2 _margin-bottom-2">
+</div>
+
+      <h3 id="disclaimer">Disclaimer</h3>
+
+      <p>This API does not make any assumptions or conclusions about the data found on the list, it merely provides API wrapper for the data. This code is an unlicensed, unsolicited mirror of the data, and does not make any warranties around the validity of the accuracy of the data. To make better decisions about the predatory nature of a journal, please visit <a href="https://thinkchecksubmit.org">https://thinkchecksubmit.org</a>. For a more up-to-date service, check out <a href="https://www2.cabells.com/">Cabell’s List</a>.</p>
+
+    </div>
+
+    <style>
+._table-container {
+  max-height: 2400px;
+  overflow: scroll;
+}
+td:first-of-type a {
+  text-decoration: none;
+}
+
+</style>
+
+  </div></div>
+
+    </div>
+
+  </body>
+</html>
+
+<script src="../assets/javascripts/site.js" type="text/javascript"></script>

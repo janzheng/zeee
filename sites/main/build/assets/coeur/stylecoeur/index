@@ -1690,8 +1690,8 @@ Tip: this outputs
   content: ' ';
   display: block;
   position: fixed;
-  top: calc(50% - $size-p4/2);
-  left: calc(50% - $size-p4/2);
+  top: calc(50% - 22.5px);
+  left: calc(50% - 22.5px);
   width: 45px;
   height: 45px;
   background-color: #333;
@@ -3315,8 +3315,8 @@ body,
   text-transform: capitalize; }
 
 ._wireframe-comments h1, ._wf-comments h1, ._font-largest {
-  font-size: 26.25px;
-  line-height: 39.375px; }
+  font-size: 30px;
+  line-height: 45px; }
 
 ._wireframe-comments h2, ._wf-comments h2, ._font-larger {
   font-size: 21px;
@@ -3363,8 +3363,8 @@ h2 {
 
 ._sectionhead,
 h3 {
-  font-size: 26.25px;
-  line-height: 39.375px;
+  font-size: 30px;
+  line-height: 45px;
   font-weight: 700;
   padding: 15px 0; }
 
@@ -5747,6 +5747,10 @@ button.--outline, ._button-outline, ._buttonGroup.--outline ._button, ._button-g
     color: #366EA6;
     border-color: #366EA6;
     background-color: transparent; }
+  button.--outline.--disabled, ._button-outline.--disabled, ._buttonGroup.--outline .--disabled._button, ._button-group.--outline .--disabled._button, ._button.--outline.--disabled {
+    border-color: #888888;
+    color: #888888 !important;
+    background: transparent !important; }
 
 button.--text,
 ._button-text,
@@ -6024,7 +6028,7 @@ section, ._section,
   padding-left: 15px; }
 
 ._width-content-min {
-  max-width: 360px;
+  max-width: 320px;
   padding-right: 15px;
   padding-left: 15px; }
 
@@ -6283,8 +6287,8 @@ li {
   height: 22.5px; }
 
 .--p2 {
-  width: 26.25px;
-  height: 26.25px; }
+  width: 30px;
+  height: 30px; }
 
 .--p3 {
   width: 37.5px;
@@ -7011,7 +7015,7 @@ input, .input {
   input.--tall, .input.--tall {
     padding-top: 40.5px;
     padding-bottom: 40.5px;
-    font-size: 26.25px; }
+    font-size: 30px; }
   input.--width-full, .input.--width-full {
     width: 100%; }
   input.--width-medium, .input.--width-medium {
@@ -7254,7 +7258,7 @@ textarea, .textarea {
   position: relative;
   display: inline-block;
   width: 45px;
-  height: 26.25px;
+  height: 30px;
   overflow-x: visible;
   white-space: nowrap; }
   ._toggle input {
@@ -7276,7 +7280,7 @@ textarea, .textarea {
     border-radius: 24px; }
     ._toggle.--pill ._toggle-slider:before {
       border-radius: 50%;
-      width: 21px; }
+      width: 24px; }
   ._toggle label {
     display: inline-block;
     padding-left: 60px;
@@ -7299,7 +7303,7 @@ textarea, .textarea {
   justify-items: start; }
   ._toggle-slider:before {
     content: "";
-    height: 21px;
+    height: 24px;
     width: 7.5px;
     position: relative;
     margin: 3.75px;
@@ -7331,7 +7335,7 @@ html._modal-html {
   position: relative;
   left: 50%;
   width: 80%;
-  min-width: 360px;
+  min-width: 320px;
   max-width: 640px;
   height: auto;
   z-index: 2000;
@@ -7507,14 +7511,17 @@ html._modal-html {
   ._expander ._expander-title ~ * {
     height: 0;
     opacity: 0;
-    margin: 0; }
+    margin: 0;
+    display: inline-block;
+    display: block; }
   ._expander.--open ._expander-icon {
     height: 30px;
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg); }
   ._expander.--open ._expander-title ~ * {
     height: auto;
-    opacity: 1; }
+    opacity: 1;
+    display: initial; }
 
 ._infobox {
   grid-gap: 0 !important;
@@ -7613,14 +7620,17 @@ html._modal-html {
   ._expander ._expander-title ~ * {
     height: 0;
     opacity: 0;
-    margin: 0; }
+    margin: 0;
+    display: inline-block;
+    display: block; }
   ._expander.--open ._expander-icon {
     height: 30px;
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg); }
   ._expander.--open ._expander-title ~ * {
     height: auto;
-    opacity: 1; }
+    opacity: 1;
+    display: initial; }
 
 ._blog-item {
   display: block;
@@ -7861,7 +7871,10 @@ html._modal-html {
   ._table.--stack th[data-title]:before, ._table.--stack td[data-title]:before, ._table_container.--stack th[data-title]:before, ._table_container.--stack td[data-title]:before, ._table_container table.--stack th[data-title]:before, ._table_container table.--stack td[data-title]:before {
     content: attr(data-title) ": ";
     display: inline-block;
-    width: 90px; }
+    position: absolute;
+    left: 15px; }
+  ._table.--stack td, ._table_container.--stack td, ._table_container table.--stack td {
+    padding-left: 90px !important; }
   ._table.--stack tbody tr td:first-of-type, ._table_container.--stack tbody tr td:first-of-type, ._table_container table.--stack tbody tr td:first-of-type {
     font-weight: bold; }
     ._table.--stack tbody tr td:first-of-type:before, ._table_container.--stack tbody tr td:first-of-type:before, ._table_container table.--stack tbody tr td:first-of-type:before {
@@ -7882,7 +7895,10 @@ html._modal-html {
     ._table.--stack-xs th[data-title]:before, ._table.--stack-xs td[data-title]:before, ._table_container.--stack-xs th[data-title]:before, ._table_container.--stack-xs td[data-title]:before, ._table_container table.--stack-xs th[data-title]:before, ._table_container table.--stack-xs td[data-title]:before {
       content: attr(data-title) ": ";
       display: inline-block;
-      width: 90px; }
+      position: absolute;
+      left: 15px; }
+    ._table.--stack-xs td, ._table_container.--stack-xs td, ._table_container table.--stack-xs td {
+      padding-left: 90px !important; }
     ._table.--stack-xs tbody tr td:first-of-type, ._table_container.--stack-xs tbody tr td:first-of-type, ._table_container table.--stack-xs tbody tr td:first-of-type {
       font-weight: bold; }
       ._table.--stack-xs tbody tr td:first-of-type:before, ._table_container.--stack-xs tbody tr td:first-of-type:before, ._table_container table.--stack-xs tbody tr td:first-of-type:before {
@@ -7912,8 +7928,8 @@ Tip: this outputs
   content: ' ';
   display: block;
   position: fixed;
-  top: calc(50% - $size-p4/2);
-  left: calc(50% - $size-p4/2);
+  top: calc(50% - 22.5px);
+  left: calc(50% - 22.5px);
   width: 45px;
   height: 45px;
   background-color: #333;
