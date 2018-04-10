@@ -1,20 +1,13 @@
 /*
 
   todo:
-    - fix anchor links, esp. for citations
-      - check external links?
-      - maybe as part of the citation builder?
-    - images need to be fixed
-    - add a ?data=[data]
-      - useful for paywalled services; hooked up w/ the bookmarklet
-      * need POST data; can't use URL to pass huge data packets
-
-  done:
     - scrape for DOI and add citations 
-    - ignored: support both http and https
+    - support both http and https
     - resolve anchor and hashtags by rewriting them
     - resolve image and other local refs
     - add separate html ?html=true to return html, otherwise return json obj
+    - add a ?data=[data]
+      - useful for paywalled services; hooked up w/ the bookmarklet
     - package data w/
       - domain
       - uri
@@ -26,7 +19,6 @@
         - multiple styles found on google scholar auto generated
         - https://crosscite.org/format?doi=10.3389/fmicb.2016.01024&style=apa&lang=en-US
         
-
     - run requests like: 
       - https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/paperstrip?url=https://www.frontiersin.org/articles/10.3389/fmicb.2016.01024/full
       - https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/paperstrip?html=true&url=https://www.frontiersin.org/articles/10.3389/fmicb.2016.01024/full
@@ -48,10 +40,10 @@ var writeArticle = function( res, article ) {
     + "</title></head><body>"
     + article.content
     + "</body></html>"); 
-}
+};
 
 var metaParse = function (property, rules) {
-  var obj = {value: '(best value)', els: []}
+  var obj = {value: '(best value)', els: []};
   // console.log('Finding:', property)
   for (var rule of rules) {
     // console.log('rule:', rule[0])
@@ -60,20 +52,20 @@ var metaParse = function (property, rules) {
       obj.els.push({
         el: this,
         data: rule[1](this)
-      })
-    })
+      });
+    });
   }
   
   // get the first one found
   if(obj.els.length > 0) {
-    obj.value = obj.els[0].data
-    obj[property] = obj.els[0].data
+    obj.value = obj.els[0].data;
+    obj[property] = obj.els[0].data;
   } else {
-    obj.value = undefined
-    obj[property] = undefined
+    obj.value = undefined;
+    obj[property] = undefined;
   }
-  return obj.value
-}
+  return obj.value;
+};
 
 // parse object to string and write the respose
 var writeJSON = function( res, obj ) {
@@ -91,7 +83,6 @@ var writeJSON = function( res, obj ) {
   res.write( objJSON );
 };
 
-
 var getCitations = function(doi) {
   return new Promise((resolve) => {
     // this only works for crosscite dois
@@ -106,12 +97,59 @@ var getCitations = function(doi) {
         harvard: harvard,
         mla: mla,
         chicago: chicago
-      })
+      });
     });
   });
-}
+};
 
-var getPaper = function(ctx) {
+getPaperFromSrc = function( src, uri ) {
+  var paper = {};
+  var doc = jsdom(src, {features: {
+    FetchExternalResources: false,
+    ProcessExternalResources: false
+  }});
+  $ = require('jquery')(doc.parentWindow); // initialize jquery
+  
+  console.log('generating paper product from', src, uri)
+  
+  paper['domain'] = metaParse("domain", [
+            [`[name="twitter:domain"]`, node => $(node).attr('content')],
+          ], doc) || url.parse(uri).host;
+
+  paper['uri'] = uri;
+          
+  paper['doi'] = metaParse("DOI", [
+      [`[name="citation_doi"]`, node => $(node).attr('content')],
+      [`[name="DC.Identifier"]`, node => $(node).attr('content')],
+    ]);
+  
+  
+  // add section identifiers (MUTATES THE DOC!)
+  $('h1, h2, h3, h4, h5, h6').each(function(data){
+    var ref = _.kebabCase($(this).text());
+    $(this).attr('id',ref);
+  });
+  
+  // render article after all other transformation
+  paper['article'] = new r.Readability(uri, doc).parse();
+  
+  console.log('BOOP',src,paper,doc)
+  
+  // add sections for parsed article
+  paper['sections'] = [];
+  $($.parseHTML(paper.article.content)).find('h1, h2, h3, h4, h5, h6').each(function(data){
+    var section = {
+      title: $(this).text(),
+      ref: $(this).attr('id')
+    };
+    paper.sections.push(section);
+  });
+  
+  console.log('BOOP2')
+  console.log('paper product', doc )
+  return paper; 
+}
+var getPaperFromUrl = function(ctx) {
   return new Promise((resolve, reject) => {
     
     var uri = ctx.query.url;
@@ -125,92 +163,67 @@ var getPaper = function(ctx) {
       _res.on('data', function(d){ src += d; });
       _res.on('end', function(){
         
-        var paper = {};
-        
-        var doc = jsdom(src, {features: {
-          FetchExternalResources: false,
-          ProcessExternalResources: false
-        }});
-        $ = require('jquery')(doc.parentWindow); // initialize jquery
-        
-        
-        paper['domain'] = metaParse("domain", [
-                  [`[name="twitter:domain"]`, node => $(node).attr('content')],
-                ], doc) || url.parse(uri).host;
-
-        paper['uri'] = metaParse("domain", [
-                  [`[name="twitter:domain"]`, node => $(node).attr('content')],
-                ], doc) || uri;
-                
-        paper['doi'] = metaParse("DOI", [
-            [`[name="citation_doi"]`, node => $(node).attr('content')],
-            [`[name="DC.Identifier"]`, node => $(node).attr('content')],
-          ]);
-        
-        // add section identifiers (MUTATES THE DOC!)
-        $('h1, h2, h3, h4, h5, h6').each(function(data){
-          var ref = _.kebabCase($(this).text());
-          $(this).attr('id',ref)
-        });
-        
-        // render article after all other transformation
-        paper['article'] = new r.Readability(uri, doc).parse();
-        
-        // add sections for parsed article
-        paper['sections'] = [];
-        $($.parseHTML(paper.article.content)).find('h1, h2, h3, h4, h5, h6').each(function(data){
-          var section = {
-            title: $(this).text(),
-            ref: $(this).attr('id')
-          }
-          paper.sections.push(section);
-        });
-        
+        var paper = getPaperFromSrc(src, uri);
         resolve(paper);
       });
       
-      // get the citations
-        
     });
       
   });
-}
+};
 
 var finish = function(res, ctx, paper) {
-  console.log('finishing up')
   if(ctx.query.html == 'true') {
-    console.log('html')
     res.writeHead(200, { 'Content-Type': 'text/html' });
     writeArticle(res, paper.article);
   } else {
-    console.log('json')
     res.writeHead(200, { 'Content-Type': 'application/json' });
     writeJSON(res, paper);
   }
-  console.log('finish__')
   res.end();
-}
+};
 
+
+
+
+
+// main entry
 module.exports = 
   function (ctx, req, res) {
     
     if(req.method == 'GET') {
       
-      getPaper(ctx)
-        .then(function(paper){
+      var uri = ctx.query.url;
+      // console.log('url', req.url, 'uri', uri);
+      if (ctx.query.url) {
+        if (ctx.query.data) {
+          var paper = getPaperFromSrc(ctx.query.data, ctx.query.uri);
           if(paper.doi) {
-              console.log('getting citations...')
+              console.log('getting citations...');
             getCitations(paper.doi).then(function(citations) {
-              paper['citations'] = citations
+              paper['citations'] = citations;
               finish(res, ctx, paper);
-            })
-          } else {
-            finish(res, ctx, paper)
+            });
           }
-          
-        })
-        
+          finish(res, ctx, paper);
+          res.end();
+        } else {
+          getPaperFromUrl(ctx)
+            .then(function(paper){
+              if(paper.doi) {
+                  console.log('getting citations...');
+                getCitations(paper.doi).then(function(citations) {
+                  paper['citations'] = citations;
+                  finish(res, ctx, paper);
+                });
+              } else {
+                finish(res, ctx, paper);
+              }
+            });
+        } 
+      } else {
+        res.write('Please add a url= and optionally html data=');
+        res.end();
+      }
     }
-
-    // res.end();
   };

@@ -11,6 +11,6 @@
     "prod": "cd sites/main; npm run prod"
   },
   "dependencies": {
-    "coeur": "0.1.57"
+    "coeur": "0.1.58"
   }
 }
