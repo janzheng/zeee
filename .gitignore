@@ -1,0 +1,6 @@
+# dependencies
+node_modules
+_paperstrip/node_modules
+
+# logs
+npm-debug.log

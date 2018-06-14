@@ -22,8 +22,13 @@
     - run requests like: 
       - https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/paperstrip?url=https://www.frontiersin.org/articles/10.3389/fmicb.2016.01024/full
       - https://wt-ece6cabd401b68e3fc2743969a9c99f0-0.run.webtask.io/paperstrip?html=true&url=https://www.frontiersin.org/articles/10.3389/fmicb.2016.01024/full
+
+    
+    - added headers for arxiv.org support
+    - added gzip decompression for Massive support
 */
 
+zlib = require('zlib');
 _ = require('lodash');
 url = require('url');
 http = require('http');
@@ -145,7 +150,6 @@ getPaperFromSrc = function( src, uri ) {
     paper.sections.push(section);
   });
   
-  console.log('BOOP2')
   console.log('paper product', doc )
   return paper; 
 }
@@ -155,16 +159,43 @@ var getPaperFromUrl = function(ctx) {
     var uri = ctx.query.url;
     // console.log('url', req.url, 'uri', uri);
     uri = uri ? uri : e => (res.write('add a ?url= !'));
-
+    
     // get the article and metadata
-    https.get(uri, function(_res){
-      var src = '';
+    var options = {
+      hostname: url.parse(uri).hostname,
+      path: url.parse(uri).path,
+      headers: {
+        'user-agent': ' Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+      },
+    }
+    https.get(options, function(_res){
+      
+      var src, buffer=[];
+      var contentEncoding = _res.headers['content-encoding'];
       _res.on('error', function(e){ reject(e) });
-      _res.on('data', function(d){ src += d; });
+      _res.on('data', function(d){ 
+        if(contentEncoding == 'gzip') {
+          buffer.push(d)
+        } else {
+          src += d;
+        }
+      });
       _res.on('end', function(){
         
-        var paper = getPaperFromSrc(src, uri);
-        resolve(paper);
+        if(contentEncoding == 'gzip') {
+          console.log('zlib src',contentEncoding)
+          zlib.unzip(Buffer.concat(buffer), function(err, _buffer) {
+            console.log('gzip',err, _buffer)
+            if (!err) {
+              var paper = getPaperFromSrc(_buffer.toString(), uri);
+              resolve(paper);
+            }
+          });
+        } else {
+          console.log('src',contentEncoding, src)
+          var paper = getPaperFromSrc(src, uri);
+          resolve(paper);
+        }
       });
       
     });
@@ -206,7 +237,6 @@ module.exports =
             });
           }
           finish(res, ctx, paper);
-          res.end();
         } else {
           getPaperFromUrl(ctx)
             .then(function(paper){
